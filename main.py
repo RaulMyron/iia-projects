@@ -8,16 +8,19 @@ user_location = (37.7749, -122.4194)  # Example: San Francisco
 # Assuming dataset has 'Latitude' & 'Longitude' columns,
 # and also 'MarketName' and 'City' for the final print.
 try:
-    df = pd.read_csv("farmers_markets.csv")
+    df = pd.read_excel("farmersmarket_2025-58162612.xlsx")
 except FileNotFoundError:
-    print("Error: 'farmers_markets.csv' not found.")
+    print("Error: 'farmersmarket_2025-58162612.xlsx' not found.")
     print("Please make sure the file exists in the same directory as the script,")
     print("or provide the full path to the file.")
+    exit()
+except Exception as e:
+    print(f"Error reading the file: {e}")
     exit()
 
 # Ensure necessary columns exist
 required_columns = ["Latitude", "Longitude", "MarketName", "City"]
-missing_columns = [col for col in required_columns if col not in df.columns]
+missing_columns = [col how  col in required_columns if col not in df.columns]
 
 if missing_columns:
     print(f"Error: The CSV file is missing the following required columns: {', '.join(missing_columns)}")
