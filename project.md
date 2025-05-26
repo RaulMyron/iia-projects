@@ -15,7 +15,7 @@ Para a construção do sistema, foram utilizadas as seguintes bibliotecas princi
 
 ## 3. Fontes e Preparação dos Dados
 
-A base do sistema é construída a partir de diferentes fontes de dados, که foram processadas e integradas:
+A base do sistema é construída a partir de diferentes fontes de dados foram processadas e integradas:
 
 ### 3.1. Associações e Cooperativas (Localização e Produtos)
 
@@ -30,7 +30,7 @@ A base do sistema é construída a partir de diferentes fontes de dados, که fo
 
 ### 3.3. Dados de Produção Regional (EMATER-DF)
 
-* **Coleta de Dados:** Informações sobre a produção agrícola por região administrativa do DF (área plantada, volume de produção por cultura) foram estruturadas (baseadas nos dados da EMATER-DF que você forneceu).
+* **Coleta de Dados:** Informações sobre a produção agrícola por região administrativa do DF (área plantada, volume de produção por cultura) foram estruturadas.
 * **Utilização:** A partir desses dados, foi calculada a `relevancia_regiao_percent` para cada produto em cada região. Este indicador mostra a participação percentual da produção de uma região em relação ao total do DF para um item específico. Ele é usado como um critério de "qualidade" ou especialização produtiva da região.
 
 ## 4. Base para Recomendações Colaborativas: Matriz de Utilidade
