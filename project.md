@@ -19,25 +19,25 @@ A base do sistema é construída a partir de diferentes fontes de dados, که fo
 
 ### 3.1. Associações e Cooperativas (Localização e Produtos)
 
-* **Coleta de Dados (Passo 1 e 2 da sua lista):** As informações sobre as 17 associações/cooperativas (nome, coordenadas de latitude e longitude, e produtos oferecidos) foram levantadas manualmente. As coordenadas foram obtidas via Google Maps, CNPJ ou outras fontes online (ex: redes sociais). Para associações com múltiplos locais, uma única coordenada foi assumida. A lista de produtos que cada uma comercializa foi extraída de fontes como editais do GDF, resultando no arquivo `associacao_vende.txt`.
+* **Coleta de Dados:** As informações sobre as 17 associações/cooperativas (nome, coordenadas de latitude e longitude, e produtos oferecidos) foram levantadas manualmente. As coordenadas foram obtidas via Google Maps, CNPJ ou outras fontes online (ex: redes sociais). Para associações com múltiplos locais, uma única coordenada foi assumida. A lista de produtos que cada uma comercializa foi extraída de fontes como editais do GDF, resultando no arquivo `associacao_vende.txt`.
 * **Estruturação:** Esses dados foram organizados em um DataFrame, incluindo um ID para cada associação, nome, latitude, longitude, uma lista padronizada de produtos, uma avaliação média simulada (para fins de exemplo) e uma indicação se o foco principal é em produtos orgânicos.
 * **Padronização (`produtos_escopo`, `mapeamento_produtos`):** Foi definida uma lista (`produtos_escopo`) com todos os produtos considerados pelo sistema. Um dicionário de mapeamento (`mapeamento_produtos`) foi usado para padronizar diferentes nomes de um mesmo produto (ex: "Limão Tahiti" para "Limão").
 
 ### 3.2. Informações Nutricionais (TACO)
 
-* **Coleta de Dados (Passo 3 da sua lista):** Os dados nutricionais (calorias, vitaminas, fibras, etc.) foram extraídos da Tabela Brasileira de Composição de Alimentos (TACO). Para alimentos não presentes na TACO (como Abóbora Cabotiá, Coentro, Hortelã, Limão Tahiti, Repolho Verde), as informações foram complementadas manualmente com base em pesquisas em tabelas do IBGE ou equivalentes.
+* **Coleta de Dados:** Os dados nutricionais (calorias, vitaminas, fibras, etc.) foram extraídos da Tabela Brasileira de Composição de Alimentos (TACO). Para alimentos não presentes na TACO (como Abóbora Cabotiá, Coentro, Hortelã, Limão Tahiti, Repolho Verde), as informações foram complementadas manualmente com base em pesquisas em tabelas do IBGE ou equivalentes.
 * **Utilização:** Estes dados permitem que o sistema filtre ou classifique produtos com base em critérios nutricionais definidos pelo usuário. Foram calculados scores normalizados para alguns nutrientes (ex: `score_vitamina_c`, `score_baixa_caloria`) para facilitar comparações.
 
 ### 3.3. Dados de Produção Regional (EMATER-DF)
 
-* **Coleta de Dados (Passo 4 da sua lista):** Informações sobre a produção agrícola por região administrativa do DF (área plantada, volume de produção por cultura) foram estruturadas (baseadas nos dados da EMATER-DF que você forneceu).
+* **Coleta de Dados:** Informações sobre a produção agrícola por região administrativa do DF (área plantada, volume de produção por cultura) foram estruturadas (baseadas nos dados da EMATER-DF que você forneceu).
 * **Utilização:** A partir desses dados, foi calculada a `relevancia_regiao_percent` para cada produto em cada região. Este indicador mostra a participação percentual da produção de uma região em relação ao total do DF para um item específico. Ele é usado como um critério de "qualidade" ou especialização produtiva da região.
 
 ## 4. Base para Recomendações Colaborativas: Matriz de Utilidade
 
 Para implementar a filtragem colaborativa, que sugere itens com base no comportamento de outros usuários, foi criada uma matriz de utilidade.
 
-### 4.1. Criação e Propósito da Matriz (Passo 5 e 6 da sua lista)
+### 4.1. Criação e Propósito da Matriz
 
 * A matriz de utilidade representa as interações (neste caso, avaliações simuladas) entre "consumidores" (usuários) e "itens" (associações/cooperativas).
 
