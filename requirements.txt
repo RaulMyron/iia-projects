@@ -10,3 +10,5 @@ pdfplumber
 camelot-py[cv]
 scipy
 seaborn
+matplotlib
+scikit-learn
