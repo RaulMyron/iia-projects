@@ -1,0 +1,31 @@
+1. Descobrir a localização lat, long, de cada uma das 17 associações, de maneira manual, 
+seja através de google maps ou através de cnpj ou através de facebook, instagram e outros, 
+curadoria feita na mão: associacao_posicao.txt, infelizmente alguns valores faltam se uma mesma
+associação está em até 3 locais, então assumo que para todas a localização é a mesma
+
+2. Extrair o que cada uma vende na prática, foi possível através dos editais do gdf de alimentação, onde temos
+região de associação + numerado por valor cada alimento que pode ser encontrando, associacao_vende.txt, assim é 
+possível descobrir o que cada uma está produzindo, as vezes não, isso foi feito de maneira manual + utilizando um autenticaor 
+python, a partir disso também é possível saber uma lista de alimentos unicos por 
+
+3. depois disso tudo é utilizada a tabela de informações nutricionais chamada de Tabela Brasileira de
+Composição de Alimentos (TACO) onde foi possível extrair as informações nutricionais de cada uma das 
+frutas e outros alimentos que necessários que estarão presentes na tabela para ajudar no filtro, não tinham 3 alimentos 
+9001,"Abóbora, cabotiá, crua",...
+9002,"Coentro, folhas, cruas",...
+9003,"Hortelã, crua",...
+9004,"Limão, Taiti, crua",...
+9005,"Repolho, verde, crua",..
+que foram adicionados na mão conforme pesquisas de tabela nutricional do IBGE
+
+4. realizar a extração dos dados da tabela da EMATER-DF no qual auxiliaria ponderamente caso criemos (acho que vou)
+criar um filtro de relevância por região, onde é possível ponderar se certa região ou não é grande produtora de certo
+alimento, assim demonstrando qualitativos + demonstrando outras variaveis
+
+5. começo da criação das matrizes e associações conforme o link que o professor falou e outras sugestões de leituras diversas
+
+6. realiza a criação da matriz de utilidade, de forma complementar também é importante 
+
+6.5 assumir que o usuário pode ter vários critérios de filtragem na matriz, como qualidade (podendo ser relevância da região que produz mais produtos),
+distância relativa ao usuário, e outros mini critéirios como calorias, Umidade_porcento,Energia_kcal,Energia_kJ,Proteina_g,Lipideos_g,Colesterol_mg,Carboidrato_g,Fibra_Alimentar_g,Cinzas_g,Calcio_mg,Magnesio_mg
+que são os critérios nutricionais dos alimentos 

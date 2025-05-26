@@ -1,0 +1,135 @@
+1. Associação de Agricultores Familiares da Eco Comunidade do Assenta-
+mento 15 de Agosto (Afeca) – São Sebastião 
+
+São Sebastião:
+
+gmaps: https://maps.app.goo.gl/vYRiHbzHJ75XjeyS6
+
+X, Y: -15.911319239985705, -47.72131112882934
+
+2. Associação Agrícola do Distrito Federal e Ride (Agrifam) – Taguatinga, Gama, Santa Maria
+
+SANTA MARIA:
+
+site: https://mapaosc.ipea.gov.br/detalhar/1320014
+
+QUADRA LOTE 12 B COND PORTO RICO ET III
+SETOR HABITACIONAL RIBEIRAO (SANTA MARIA), Brasília - DF
+CEP.: 72550046
+
+Longitude IBGE: -48.040909
+Latitude IBGE: -15.9329925
+
+GAMA: NÃO ACHEI A LOCALIZAÇÃO, USAR A DE SANTA MARIA
+TAGUATINGA; NÃO ACHEI A LOCALIZAÇÃO, USAR A DE SANTA MARIA
+
+3. Associação Mista dos Agricultores Familiares, Orgânicos e Produtores Rurais do DF e Entorno (Amista) – Santa Maria
+
+SANTA MARIA:
+
+site: https://associacaoamista.wordpress.com/
+
+-15.782057104376022, -47.470923755702806
+
+4. Associação dos Produtores da Agricultura Familiar  (Aspaf) – Guará, Núcleo Bandeirante, Plano Piloto
+
+SITE: https://www.facebook.com/aspaf1
+https://cnpj.biz/28736722000128
+
+NUCLEO BANDEIRANTES:
+-15.94040450552878, -47.73796481882622
+GUARÁ E PLANO PILOTO: USAR A LOCALIZAÇÃO NUCLEO BANDEIRANTES
+
+5. Associação dos Produtores Rurais de Alexandre Gusmão (ASPAG)
+
+gmaps: https://maps.app.goo.gl/EAsTNtUKz68pMEU27
+-15.726869051559817, -48.18901988873175
+
+6: Associação dos Produtores de Hortigranjeiros do Distrito Federal (ASPHOR)
+
+
+PLANO PILOTO: 
+https://www.instagram.com/asphorceasa/
+
+-15.79144276715598, -47.948464615617105
+
+GAMA E SANTA MARIA: USAR A MESMA LOCALIZAÇÃO DO PLANO PILOTO
+
+7: Associação dos Produtores Rurais Orgânicos e Convencionais do Distrito Federal e Entorno – ASPROC – Ceilândia, Recanto das Emas, Samambaia, Paranoá, Planaltina
+
+https://sistemasweb.mda.gov.br/vitrine/produtor/31259929000163/tomate-6228-87
+
+CEILÂNDIA: -15.777904971762666, -48.12098897020641
+
+Recanto das Emas, Samambaia, Paranoá, Planaltina: Utilizar Ceilândia
+
+8: Associação dos Produtores Rurais Novo Horizonte Betinho – ASPRONTE – Ceilândia, Recanto Das Emas
+
+Brazlândia
+
+https://maps.app.goo.gl/Pd36WhdSPktvETbW9
+-15.603130351517684, -48.11351625838292
+
+CEILANDIA E RECANTO DAS EMAS: Usar o de Brazlândia
+
+9. Associação dos Trabalhadores Rurais da Agricultura Familiar do Assentamento Chapadinha (ASTRAF)
+
+https://www.facebook.com/astrafchapadinhaa/?locale=pt_BR
+
+-15.542238997403073, -48.02999539758476
+
+10. Cooperativa Mista da Agricultura Familiar do Meio Ambiente e da Cultura do Brasil – COOPBRASIL Gama, Recanto Das Emas, Samambaia, Núcleo Bandeirante, Planaltina, Brazlândia, Ceilândia
+
+https://www.goiascooperativo.coop.br/cooperativa/coopindaia/
+
+recanto das emas:
+-15.91858508676946, -48.082794613533395
+
+Gama, Samambaia, Núcleo Bandeirante, Planaltina, Brazlândia, Ceilândia: USA A LOCALIZAÇÃO DO RECANTO DAS EMAS 
+
+11. Cooperativa Agrícola Buriti Vermelho – Cooper-Horti – Paranoá
+
+https://maps.app.goo.gl/PWwHiZhQ87e6jhzi7
+
+-15.898749762451372, -47.40920332828357
+
+12. Cooperativa dos Produtores Rurais de Planaltina de Goiás e Região – Prorural – Plano Piloto, Paranoá
+
+https://maps.app.goo.gl/KSVWvXvwprVEH5796
+-15.445505043337823, -47.619013860477395
+
+13. Cooperativa Agropecuária da Região de Brazlândia – Coopebraz – Brazlândia, Taguatinga, Samambaia, Recanto Das Emas
+
+http://cnpj.info/Coopebraz-Cooperativa-Agropecuaria-da-Regiao-de-Brazlandia
+
+Brazlândia
+-15.602622879388331, -48.113771806694366
+
+Taguatinga, Samambaia, Recanto Das Emas: Usar a localização de Brazlândia
+
+14. Cooperativa de Agricultura Familiar Mista do Distrito Federal – Coopermista – Planaltina
+
+https://www.instagram.com/coopermista/
+
+https://cnpj.biz/26597632000178
+-15.764000372646636, -47.493246757772916
+
+15. Cooperativa dos Agricultores Familiares Ecológicos do Cerrado – Rede Terra – Santa Maria
+
+https://www.econodata.com.br/consulta-empresa/13766790000162-COOPERATIVA-DOS-AGRICULTORES-FAMILIARES-ECOLOGICOS-DO-CERRADO
+
+-16.78492117050538, -47.600542808398885
+
+16. Cooperativa Agrícola da Região de Planaltina – Cootaquara – Ceilândia
+
+https://maps.app.goo.gl/hxZLPWeduHVHtHw46
+
+-15.632824387395834, -47.52265080912677
+
+17. Cooperativa de Serviços Ambientais, Agricultura Familiar, Sociedade, Cultura E Saúde – Cooperbrasília – Sobradinho, São Sebastião
+
+http://cnpj.info/Cooperativa-de-Servicos-Ambientais-Agricultura-Familiar-Sociedade-Cultura-e-Saude-Cooperbrasilia-Coopindaia
+
+-15.918543786188092, -48.08281607418427
+
+

@@ -3,3 +3,10 @@ numpy
 geopy
 openpyxl
 jupyter
+geopy
+folium
+pypdf2
+pdfplumber
+camelot-py[cv]
+scipy
+seaborn
