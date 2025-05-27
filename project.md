@@ -98,24 +98,8 @@ A personalização das recomendações é feita através do dicionário `prefere
 
 ## 7. Visualização dos Resultados: Mapa Interativo
 
-A Nova Célula 8 (do Jupyter Notebook) utiliza a função `criar_mapa_recomendacoes_folium_v2` para gerar um mapa interativo:
+`criar_mapa_recomendacoes_folium_v2` para gerar um mapa interativo:
 
 * Exibe a localização do usuário e um círculo representando o raio de busca.
 * Marca as associações recomendadas no mapa.
 * Popups em cada marcador mostram detalhes da associação, incluindo o score final, distância, e os sub-scores que contribuíram para a recomendação.
-
-## 8. Conclusão e Possíveis Próximos Passos
-
-O sistema desenvolvido implementa uma abordagem híbrida para recomendação de produtos agrícolas, combinando características dos itens e preferências do usuário (baseada em conteúdo) com padrões de avaliação (colaborativa). Ele permite uma busca personalizada e geolocalizada por produtores no DF.
-
-**Possíveis Próximos Passos e Melhorias:**
-
-* **Coleta de Dados Reais:** Substituir os dados simulados (avaliações de usuários) por dados reais para aumentar a precisão.
-* **Aprimoramento da Simulação:** Refinar a simulação da matriz de utilidade para gerar padrões mais complexos.
-* **Mais Critérios de Filtragem/Score:** Incluir outros fatores como horários de funcionamento, tipos de entrega, etc.
-* **Algoritmos de Machine Learning Avançados:**
-    * Implementar técnicas como Fatoração de Matrizes (ex: SVD) para a filtragem colaborativa.
-    * Treinar modelos de regressão para prever ratings baseados em conteúdo.
-* **Interface de Usuário:** Desenvolver uma interface web ou mobile.
-* **Sistema de Feedback:** Permitir que usuários reais avaliem associações e produtos.
-* **Tratamento de "Cold Start":** Melhorar estratégias para novos usuários ou novas associações.
