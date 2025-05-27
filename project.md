@@ -1,4 +1,4 @@
-# Projeto: Sistema de Recomendação de Produtos Agrícolos do DF
+# Projeto: Sistema de Recomendação de Produtos Agrícolas do DF
 
 ## 1. Objetivo do Projeto
 
@@ -12,26 +12,29 @@ Para a construção do sistema, foram utilizadas as seguintes bibliotecas princi
 * **NumPy:** Para operações numéricas e trabalho com arrays.
 * **Geopy:** Para calcular distâncias geográficas precisas (geodésicas) entre coordenadas.
 * **Folium:** Para a criação de mapas interativos para visualização das recomendações.
+* **Scikit-learn:** Especificamente `cosine_similarity` para o cálculo de similaridade na filtragem colaborativa.
 
 ## 3. Fontes e Preparação dos Dados
 
-A base do sistema é construída a partir de diferentes fontes de dados foram processadas e integradas:
+A base do sistema é construída a partir de diferentes fontes de dados que foram processadas e integradas:
 
 ### 3.1. Associações e Cooperativas (Localização e Produtos)
 
-* **Coleta de Dados:** As informações sobre as 17 associações/cooperativas (nome, coordenadas de latitude e longitude, e produtos oferecidos) foram levantadas manualmente. As coordenadas foram obtidas via Google Maps, CNPJ ou outras fontes online (ex: redes sociais). Para associações com múltiplos locais, uma única coordenada foi assumida. A lista de produtos que cada uma comercializa foi extraída de fontes como editais do GDF, resultando no arquivo `associacao_vende.txt`.
-* **Estruturação:** Esses dados foram organizados em um DataFrame, incluindo um ID para cada associação, nome, latitude, longitude, uma lista padronizada de produtos, uma avaliação média simulada (para fins de exemplo) e uma indicação se o foco principal é em produtos orgânicos.
+* **Coleta de Dados:** As informações sobre 17 associações/cooperativas (nome, coordenadas de latitude e longitude, e produtos oferecidos) foram levantadas manualmente. As coordenadas foram obtidas via Google Maps, CNPJ ou outras fontes online. A lista de produtos que cada uma comercializa foi extraída de fontes como editais do GDF.
+* **Estruturação:** Esses dados foram organizados em um DataFrame (`df_associacoes`), incluindo um ID para cada associação, nome, latitude, longitude, uma lista padronizada de produtos (`produtos`), uma indicação se o foco principal é em produtos orgânicos (`organico_principal`), e uma avaliação média simulada (`avaliacao_media`).
 * **Padronização (`produtos_escopo`, `mapeamento_produtos`):** Foi definida uma lista (`produtos_escopo`) com todos os produtos considerados pelo sistema. Um dicionário de mapeamento (`mapeamento_produtos`) foi usado para padronizar diferentes nomes de um mesmo produto (ex: "Limão Tahiti" para "Limão").
 
 ### 3.2. Informações Nutricionais (TACO)
 
-* **Coleta de Dados:** Os dados nutricionais (calorias, vitaminas, fibras, etc.) foram extraídos da Tabela Brasileira de Composição de Alimentos (TACO). Para alimentos não presentes na TACO (como Abóbora Cabotiá, Coentro, Hortelã, Limão Tahiti, Repolho Verde), as informações foram complementadas manualmente com base em pesquisas em tabelas do IBGE ou equivalentes.
-* **Utilização:** Estes dados permitem que o sistema filtre ou classifique produtos com base em critérios nutricionais definidos pelo usuário. Foram calculados scores normalizados para alguns nutrientes (ex: `score_vitamina_c`, `score_baixa_caloria`) para facilitar comparações.
+* **Coleta de Dados:** Os dados nutricionais (calorias, vitaminas, fibras, etc.) foram extraídos da Tabela Brasileira de Composição de Alimentos (TACO) e complementados manualmente quando necessário.
+* **Estruturação:** Organizados no DataFrame `df_nutrientes`.
+* **Utilização:** Estes dados permitem que o sistema filtre ou classifique produtos com base em critérios nutricionais. Foram calculados scores normalizados para alguns nutrientes (ex: `score_vitamina_c`, `score_fibras`, `score_baixa_caloria`) para facilitar comparações.
 
 ### 3.3. Dados de Produção Regional (EMATER-DF)
 
 * **Coleta de Dados:** Informações sobre a produção agrícola por região administrativa do DF (área plantada, volume de produção por cultura) foram estruturadas.
-* **Utilização:** A partir desses dados, foi calculada a `relevancia_regiao_percent` para cada produto em cada região. Este indicador mostra a participação percentual da produção de uma região em relação ao total do DF para um item específico. Ele é usado como um critério de "qualidade" ou especialização produtiva da região.
+* **Estruturação:** Organizados no DataFrame `df_producao`.
+* **Utilização:** A partir desses dados, foi calculada a `relevancia_regiao_percent` para cada produto em cada região. Este indicador mostra a participação percentual da produção de uma região em relação ao total do DF para um item específico e é usado como um critério de "qualidade" ou especialização produtiva da região.
 
 ## 4. Base para Recomendações Colaborativas: Matriz de Utilidade
 
@@ -39,67 +42,115 @@ Para implementar a filtragem colaborativa, que sugere itens com base no comporta
 
 ### 4.1. Criação e Propósito da Matriz
 
-* A matriz de utilidade representa as interações (neste caso, avaliações simuladas) entre "consumidores" (usuários) e "itens" (associações/cooperativas).
+* A matriz de utilidade (`df_utility_pivot`) representa as interações (neste caso, avaliações simuladas) entre "consumidores" (usuários) e "itens" (associações/cooperativas). O índice são os IDs dos consumidores, as colunas são os IDs das associações, e os valores são as avaliações.
 
 ### 4.2. Simulação das Avaliações
 
-* **Motivação:** Devido à ausência de um histórico real de avaliações e ao requisito do projeto de ter uma matriz com pelo menos 5.000 linhas (interações), as avaliações foram geradas artificialmente.
-* **Processo:** Um número definido de `consumidores_simulados` foi criado. Cada um "avaliou" um subconjunto aleatório de associações com notas de 1 a 5. A simulação atribuiu notas com uma leve tendência a seguir a `avaliacao_media` pré-existente (e também simulada) da associação, adicionando também um componente de aleatoriedade para variar as opiniões. O resultado é o DataFrame `df_utility_pivot`.
+* **Motivação:** Devido à ausência de um histórico real de avaliações e ao objetivo de ter um volume significativo de interações (o projeto original visava pelo menos 5.000 avaliações no formato longo), as avaliações foram geradas artificialmente.
+* **Processo:** Um número definido de `consumidores_simulados` (ex: 500) foi criado. Cada um "avaliou" um subconjunto aleatório de associações com notas de 1 a 5. A simulação atribuiu notas com uma leve tendência a seguir a `avaliacao_media` pré-existente (e também simulada) da associação, adicionando também um componente de aleatoriedade.
 
 ## 5. Componente Central: A Classe `SistemaRecomendacaoDF`
 
-Esta classe Python encapsula toda a lógica de processamento e geração de recomendações.
+Esta classe Python encapsula toda a lógica de processamento e geração de recomendações híbridas.
 
-### 5.1. Inicialização e Matriz de Similaridade Item-Item
+### 5.1. Inicialização (`__init__`)
 
-* Ao ser instanciada, a classe recebe todos os DataFrames preparados (associações, nutrientes, produção EMATER, matriz de utilidade).
-* Um passo crucial na inicialização é o cálculo da `item_similarity_df`. Esta matriz de similaridade item-item é gerada aplicando a `cosine_similarity` à transposta da `utility_matrix_filled` (matriz de utilidade com NaNs preenchidos por 0). Ela indica o quão "similares" duas associações são, com base nos padrões de avaliação dos usuários.
+O construtor da classe prepara o sistema para fazer recomendações.
 
-### 5.2. Método Principal de Recomendação (`recomendar`)
+**Parâmetros de Entrada:**
 
-* Este método é o motor que gera as sugestões personalizadas.
-    * **5.2.1. Entradas do Usuário (Localização, Preferências):** Recebe o `id_consumidor` (para a parte colaborativa), as coordenadas de `lat_usuario` e `lon_usuario`, e um dicionário de `preferencias` contendo os critérios de busca.
-    * **5.2.2. Processo de Filtragem Inicial:** As associações são inicialmente filtradas por:
-        * **Distância:** Apenas aquelas dentro da `distancia_max_km` especificada.
-        * **Orgânicos:** Se `apenas_organicos` for `True`.
-        * **Produtos:** Apenas aquelas que oferecem pelo menos um dos `produtos_desejados`.
-    * **5.2.3. Cálculo de Scores para Ranking (Abordagem Híbrida):** Para as associações restantes, diversos sub-scores são calculados. O `score_final` é uma soma ponderada destes, refletindo uma abordagem híbrida:
-        * **Score de Distância (`s_dist`):** Prioriza associações mais próximas ao usuário.
-        * **Score de Avaliação da Associação (`s_aval`):** Considera a avaliação média da associação.
-        * **Score Nutricional (`s_nutri`):** Avalia o quão bem os produtos da associação atendem ao `objetivo_nutricional` do usuário (ex: baixa caloria, alta vitamina C, etc., conforme item 6.5 da sua lista).
-        * **Score de Relevância Produtiva Regional (`s_relev_prod`):** Bonifica associações em regiões com alta `relevancia_regiao_percent` para os produtos desejados (critério de "qualidade" regional, conforme item 6.5).
-        * **Score Colaborativo Item-Item (`s_collab`):** Utiliza a `item_similarity_df` para encontrar associações similares àquelas que o `id_consumidor` já avaliou positivamente.
-        * **Score Final Ponderado:** Cada sub-score é multiplicado por um peso (definido nas `preferencias`) e somados para obter o `score_final`, que ordena as recomendações.
+* `df_associacoes` (pd.DataFrame): DataFrame contendo os dados das associações.
+* `df_nutrientes` (pd.DataFrame): DataFrame com informações nutricionais dos produtos.
+* `df_producao` (pd.DataFrame): DataFrame com dados de produção regional.
+* `df_utility_pivot` (pd.DataFrame): Matriz de utilidade pivotada.
+
+**Principais Ações na Inicialização:**
+
+1.  **Armazenamento dos Dados**: Os DataFrames de entrada são copiados e armazenados como atributos da instância.
+2.  **Preenchimento da Matriz de Utilidade**: `self.utility_matrix_filled` é criada a partir de `self.df_utility_pivot`, onde os valores `NaN` (avaliações ausentes) são preenchidos com `0`.
+3.  **Cálculo da Matriz de Similaridade Item-Item (`self.item_similarity_df`)**:
+    * Se a `self.utility_matrix_filled` não estiver vazia e tiver mais de um item (associação), uma matriz de similaridade entre os itens é calculada usando a similaridade do cosseno (`cosine_similarity`) sobre a transposta da `self.utility_matrix_filled`.
+    * Esta matriz armazena o quão similar cada par de associações é, com base nos padrões de avaliação dos usuários.
+
+### 5.2. Métodos Auxiliares (Privados)
+
+* **`_calcular_distancia_km(self, lat1, lon1, lat2, lon2)`**: Calcula a distância geodésica (em km) entre dois pares de coordenadas.
+* **`_get_item_collab_score(self, id_consumidor, id_item_candidato)`**: Calcula um score de filtragem colaborativa item-item. Ele considera os itens que o `id_consumidor` avaliou bem no passado e a similaridade do `id_item_candidato` com esses itens bem avaliados.
+
+### 5.3. Método Principal de Recomendação (`recomendar`)
+
+Este método gera a lista de associações recomendadas.
+
+**Parâmetros de Entrada:**
+
+* `id_consumidor` (str): ID do consumidor.
+* `lat_usuario` (float): Latitude da localização do usuário.
+* `lon_usuario` (float): Longitude da localização do usuário.
+* `preferencias` (dict): Dicionário com as preferências do usuário (detalhado na Seção 6).
+
+**Principais Passos do Processo:**
+
+1.  **Cálculo de Distância Inicial**: A distância entre o usuário e todas as associações é calculada.
+2.  **Filtragem Inicial**: As associações são filtradas com base em:
+    * `distancia_max_km` (definida nas `preferencias`).
+    * `apenas_organicos` (definida nas `preferencias`).
+    * `produtos_desejados` (definida nas `preferencias`).
+3.  **Cálculo de Sub-Scores**: Para as associações candidatas restantes, são calculados os seguintes scores (normalizados):
+    * **`s_dist` (Score de Distância)**: Prioriza associações mais próximas.
+    * **`s_aval` (Score de Avaliação)**: Baseado na `avaliacao_media` da associação.
+    * **`s_nutri` (Score Nutricional)**: Avalia o quão bem os produtos da associação atendem ao `objetivo_nutricional` especificado, para os `produtos_desejados`.
+    * **`s_relev_prod` (Score de Relevância Produtiva Regional)**: Considera a importância da região da associação na produção dos `produtos_desejados`.
+    * **`s_collab` (Score Colaborativo Item-Item)**: Score derivado do método `_get_item_collab_score`, usando a `item_similarity_df`.
+4.  **Cálculo do `score_final`**: É uma soma ponderada dos sub-scores. Os pesos para cada sub-score são definidos no dicionário `preferencias`.
+5.  **Ranking e Seleção**: As associações são ordenadas pelo `score_final`, e as `top_n` melhores (definido em `preferencias`) são retornadas.
+
+**Retorno:**
+
+* Um DataFrame Pandas (`rec_finais`) com as associações recomendadas e colunas detalhando os scores.
 
 ## 6. Utilizando o Sistema: Personalizando as Buscas
 
-A personalização das recomendações é feita através do dicionário `preferencias` passado ao método `recomendar`.
+A personalização das recomendações é feita através do dicionário `preferencias` passado ao método `recomendar` da classe `SistemaRecomendacaoDF`.
 
-### 6.1. Definindo Localização do Usuário
+### 6.1. Detalhes dos Parâmetros de Preferência do Usuário (`user_preferences`)
 
-* Altere as variáveis `user_lat_ex...` e `user_lon_ex...` no script de teste (Nova Célula 7 do Jupyter Notebook) com as coordenadas desejadas.
+O dicionário `user_preferences` customiza a busca. Aqui estão os parâmetros aceitos:
 
-### 6.2. Especificando Produtos Desejados
+* **`'produtos_desejados'`**:
+    * **Descrição**: Lista dos produtos específicos que o consumidor deseja encontrar.
+    * **Tipo**: `List[str]` (Lista de strings)
+    * **Valores Possíveis**: Cada string deve ser um nome de produto como definido na lista `produtos_escopo`.
+    * **Exemplos**: `['Alface', 'Tomate']`, `['Morango']`, `[]` (sem filtro de produto).
+    * **Comportamento**: Busca associações com ao menos um dos produtos.
 
-* Modifique a lista `preferencias['produtos_desejados']` com os nomes dos produtos de interesse (ex: `['Morango', 'Alface']`). Os nomes devem corresponder aos definidos na lista `produtos_escopo`.
+* **`'max_distance_km'`**:
+    * **Descrição**: Raio máximo de busca em km.
+    * **Tipo**: `int` ou `float`
+    * **Valores**: Número positivo (ex: `10`, `25.5`).
+    * **Padrão (se não fornecido)**: `30`.
 
-### 6.3. Ajustando Filtros (Distância Máxima, Orgânicos, etc.)
+* **`'apenas_organicos'`**: (No seu código original, a chave nas `preferencias` era `apenas_organicos`)
+    * **Descrição**: Restringir a associações com foco principal em orgânicos.
+    * **Tipo**: `bool`
+    * **Valores**: `True` (somente orgânicos) ou `False` (todas).
+    * **Padrão (se não fornecido)**: `False`.
 
-* `preferencias['distancia_max_km']`: Define o raio de busca em km.
-* `preferencias['apenas_organicos']`: `True` para filtrar por orgânicos, `False` para não filtrar.
+* **`'objetivo_nutricional'`**:
+    * **Descrição**: Objetivo nutricional principal.
+    * **Tipo**: `str` ou `None`
+    * **Valores**: `'alta_vitamina_c'`, `'alta_fibra'`, `'baixa_caloria'`, ou `None`.
 
-### 6.4. Objetivos Nutricionais
+* **`'top_n'`**:
+    * **Descrição**: Número máximo de recomendações a retornar.
+    * **Tipo**: `int`
+    * **Valores**: Inteiro positivo (ex: `3`, `5`).
+    * **Padrão (se não fornecido)**: `5`.
 
-* `preferencias['objetivo_nutricional']`: Pode ser `'alta_vitamina_c'`, `'alta_fibra'`, `'baixa_caloria'`, ou `None`. O sistema considera as informações nutricionais dos alimentos (item 6.5 da sua lista) para este score.
+* **`'considerar_relevancia_produtiva_regiao'`**:
+    * **Descrição**: Considerar a relevância produtiva da região.
+    * **Tipo**: `bool`
+    * **Valores**: `True` (considerar) ou `False` (não considerar).
+    * **Padrão (se não fornecido)**: `True`.
 
-### 6.5. Controlando a Importância dos Critérios (Pesos dos Scores)
-
-* No dicionário `preferencias`, chaves como `peso_distancia`, `peso_avaliacao`, `peso_nutricional`, `peso_relevancia_prod`, `peso_colaborativo` permitem ajustar a importância relativa de cada fator no `score_final`. Alterar esses pesos permite calibrar o sistema para diferentes prioridades de recomendação.
-
-## 7. Visualização dos Resultados: Mapa Interativo
-
-`criar_mapa_recomendacoes_folium_v2` para gerar um mapa interativo:
-
-* Exibe a localização do usuário e um círculo representando o raio de busca.
-* Marca as associações recomendadas no mapa.
-* Popups em cada marcador mostram detalhes da associação, incluindo o score final, distância, e os sub-scores que contribuíram para a recomendação.
+* **Pesos dos Scores (tipo `float` ou `int`, geralmente não negativos)**:
+    Controlam a importância de cada fator no `score_final`.
