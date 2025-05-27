@@ -1,0 +1,78 @@
+Passos da Implementação do Projeto:
+
+1.  **Descoberta da Localização das Associações:**
+
+    As coordenadas de latitude e longitude para cada uma das 17 associações foram coletadas manualmente.
+    Fontes como Google Maps, consulta de CNPJ, perfis em Facebook e Instagram foram utilizadas.
+    Esse processo de curadoria manual resultou nos dados de geolocalização das associações (representados conceitualmente pelo que seria um `associacao_posicao.txt`).
+    Em casos onde uma mesma associação possuía múltiplos endereços, uma localização principal foi assumida para simplificar.
+    Esses dados são carregados no DataFrame `df_associacoes`.
+
+2.  **Extração do que Cada Associação Vende:**
+
+    Para identificar os produtos comercializados na prática por cada associação, foram analisados editais de alimentação do GDF.
+    Isso permitiu construir uma relação dos produtos que cada associação pode fornecer (representado conceitualmente pelo que seria um `associacao_vende.txt`).
+    A extração foi manual, com suporte de scripts Python para alguns processos. A partir disso,
+    foi possível montar uma lista dos produtos oferecidos por associação e também uma lista geral de `produtos_escopo` únicos.
+    Um `mapeamento_produtos` também foi criado para padronizar nomes diferentes para o mesmo item (ex: "Limão Tahiti" para "Limão").
+
+3.  **Utilização de Dados Nutricionais (Base TACO):**
+
+    A base de dados nutricionais principal é a Tabela Brasileira de Composição de Alimentos (TACO).
+    Dela, foram extraídas informações como calorias, vitaminas, fibras, etc., para os alimentos do `produtos_escopo`.
+    Para alimentos específicos não encontrados diretamente na TACO (como Abóbora Cabotiá, Coentro, Hortelã, Limão Tahiti, Repolho Verde – que no projeto podem ter recebido identificadores internos como 9001 a 9005 para catalogação),
+    os dados foram adicionados manualmente após pesquisa em tabelas do IBGE ou fontes nutricionais similares.
+    Essas informações são usadas para o filtro de `objetivo_nutricional` e para calcular o score `s_nutri`. Estes dados formam o DataFrame `df_nutrientes`.
+
+4.  **Extração de Dados da EMATER-DF (Relevância Regional):**
+
+    Dados da EMATER-DF sobre produção agrícola por região administrativa do DF (incluindo área plantada e toneladas produzidas por cultura) foram incorporados e estruturados no DataFrame `df_producao`.
+    Com base nisso, calculou-se a `relevancia_regiao_percent` para cada produto em cada região do DF.
+    Este indicador mostra a força produtiva de uma localidade para um item específico e é usado para o score `s_relev_prod`,
+    adicionando um critério de "qualidade" ou especialização regional à recomendação.
+
+5.  **Criação das Matrizes e Estruturas de Dados Fundamentais:**
+
+    Seguindo as orientações e leituras sobre sistemas de recomendação (https://medium.com/data-science/recommender-systems-matrix-factorization-using-pytorch-bd52f46aa199), foram estruturados os DataFrames principais:
+    `df_associacoes` (com dados cadastrais e de produtos das associações), `df_nutrientes` (com dados da TACO e complementos),
+    e `df_producao` (com dados da EMATER-DF). Essas estruturas são a base para os filtros e cálculos de score do sistema.
+    A matriz de similaridade item-item, `item_similarity_df`, também é uma estrutura crucial derivada da matriz de utilidade.
+
+6.  **Criação da Matriz de Utilidade (`df_utility_pivot`):**
+
+    Uma matriz de utilidade foi criada para simular interações (avaliações) entre consumidores e associações.
+    Como não havia dados reais de avaliação disponíveis, e o projeto visava um volume de interações que permitisse testar o componente colaborativo (o objetivo inicial era ter pelo menos 5000 linhas de interações no formato longo),
+    essa matriz foi gerada artificialmente. Um conjunto de `consumidores_simulados` foi criado,
+    e cada um "avaliou" um conjunto aleatório de associações com notas de 1 a 5. A simulação tentou introduzir algum realismo,
+    fazendo com que as notas tivessem uma leve tendência a seguir a `avaliacao_media` (também simulada) da associação,
+    mas com suficiente variabilidade para criar padrões diversos. Essa matriz é fundamental para o componente de filtragem colaborativa do sistema.
+    A inspiração para a compreensão da importância das matrizes de utilidade e técnicas de filtragem colaborativa, como a Fatoração de Matrizes, veio de estudos na área e artigos de referência, como por exemplo "Recommender Systems: Matrix Factorization from scratch" de Aakanksha NS (disponível em [towardsdatascience.com](https://towardsdatascience.com/recommender-systems-matrix-factorization-from-scratch-4a515c70ac23)). Embora a implementação atual utilize uma abordagem de similaridade item-item, esses conceitos foram valiosos.
+
+6.5. **Implementação dos Critérios de Filtragem e Pontuação do Usuário:**
+
+    O sistema permite que o usuário defina diversos critérios para personalizar as recomendações. Estes são processados no método `recomendar` da classe `SistemaRecomendacaoDF`.
+    * **Filtros Iniciais Aplicados às Associações Candidatas:**
+        * `distancia_max_km`: O usuário define um raio máximo de busca (em km) a partir da sua localização (`lat_usuario`, `lon_usuario`).
+        * `apenas_organicos`: Um valor booleano (`True`/`False`) para filtrar e considerar apenas associações com foco principal em produtos orgânicos.
+        * `produtos_desejados`: Uma lista contendo os nomes dos produtos específicos que o usuário procura. A associação precisa oferecer ao menos um deles.
+
+    * **Cálculo de Sub-Scores para o Ranking Final:**
+
+        Após a filtragem, os seguintes scores são calculados para cada associação restante:
+        * `s_dist`: Score baseado na distância. Associações mais próximas recebem um score maior.
+        * `s_aval`: Score baseado na `avaliacao_media` da associação.
+        * `s_nutri`: Avalia o quão bem os produtos da associação (dentre os `produtos_desejados`) atendem ao `objetivo_nutricional` especificado (ex: `'baixa_caloria'`, `'alta_vitamina_c'`). Este score utiliza dados detalhados da tabela nutricional como `umidade_porcento`, `energia_kcal`, `energia_kj`, `proteina_g`, `lipideos_g`, `colesterol_mg`, `carboidrato_g`, `fibra_alimentar_g`, `cinzas_g`, `calcio_mg`, `magnesio_mg`, etc., presentes no `df_nutrientes`.
+        * `s_relev_prod`: Considera a `relevancia_regiao_percent` (dados da EMATER-DF), funcionando como um indicador de "qualidade" ou especialização da região de atuação da associação nos `produtos_desejados`.
+        * `s_collab`: Score de filtragem colaborativa item-item. Este score recomenda associações com base na similaridade delas com outros itens que o consumidor (identificado por `id_consumidor`) já avaliou positivamente no passado. Utiliza a `item_similarity_df`.
+
+    * **Personalização Adicional pelo Usuário (via dicionário `preferencias`):**
+
+        * **Localização**: O usuário informa `lat_usuario` e `lon_usuario` ao chamar o método `recomendar`.
+        * **Pesos dos Scores**: É possível ajustar os pesos de cada sub-score (`peso_distancia`, `peso_avaliacao`, `peso_nutricional`, `peso_relevancia_prod`, `peso_colaborativo`) para definir a importância relativa de cada critério no `score_final` da recomendação.
+        * **`top_n`**: Define quantas das melhores recomendações (com maiores `score_final`) serão exibidas ao usuário.
+
+7.  **Visualização dos Resultados:**
+
+    A função `criar_mapa_recomendacoes` (originalmente `criar_mapa_recomendacoes_folium_v2`) gera um mapa interativo usando a biblioteca Folium.
+    Este mapa mostra a localização do usuário, o raio de busca definido, e as associações recomendadas.
+    Cada associação recomendada possui um marcador no mapa, e ao clicar nele, um popup exibe detalhes como o nome da associação, o score final, a distância, a avaliação média, se é orgânica, alguns produtos e os sub-scores que contribuíram para a recomendação.
